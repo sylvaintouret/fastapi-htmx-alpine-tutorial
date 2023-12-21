@@ -1,0 +1,12 @@
+version: '3.9'
+
+services:
+
+  api:
+    build:
+      context: ./app
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./app/src/static:/app/static
+    ports:
+      - "8000:8000"

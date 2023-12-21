@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "fastapi-htmx-alpine-tutorial"
+version = "0.1.0"
+description = ""
+authors = ["sylvaintouret <sylvaintouret@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.105.0"
+uvicorn = "^0.25.0"
+pydantic = "^2.5.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

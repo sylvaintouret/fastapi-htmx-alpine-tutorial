@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="emerald">
+
+<head>
+    <title>Index</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- font -->
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- htmx -->
+    <script defer src="https://unpkg.com/htmx.org@1.9.9"></script>
+    <!-- alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- daisyui -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.22/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <!-- tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- fontawesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <style type="text/tailwindcss">
+        @layer base {
+            html {font-family: "Ubuntu", system-ui, sans-serif;}
+            h1, .h1 {@apply  mt-2 mb-4 font-light text-5xl;}
+            h2, .h2 {@apply  mt-2 mb-4 font-light tracking-tight text-2xl;}
+            h3,.h3 {@apply  mt-2 mb-4 font-light tracking-tight text-xl;}
+            h4, .h4 {@apply  mt-2 mb-4 font-normal tracking-tight text-xl;}
+            h5, .h5 {@apply  mt-2 mb-4 font-normal tracking-tight text-lg;}
+            h6,.h6 {@apply  mt-2 mb-4 font-normal tracking-tight text-base;}
+            b, strong, .bold {@apply font-black;}
+        }
+    </style>
+
+
+</head>
+
+<body x-data class="bg-base-200 min-h-screen">
+    <header class="shadow-lg">
+        <div class="navbar bg-base-100">
+            <div class="flex-1">
+                <span class="text-xl">Delia Tech</span>
+            </div>
+            <div class="flex-none" hx-target="#main">
+                <span hx-get="/books" hx-trigger="load"></span>
+                <button hx-get="/books" hx-swap="innerHTML" class="btn btn-ghost">Books</button>
+                <button hx-get="/about" hx-swap="innerHTML" class="btn btn-ghost">About</button>
+            </div>
+        </div>
+    </header>
+
+    <main id="main"></main>
+
+    <!-- Actions -->
+    <script>
+        document.addEventListener('alpine:init', () => {
+
+            // User store for login
+            Alpine.store('books', {
+                books : [],
+                async init() {
+                    this.books = await this.all()
+                    console.log(this.books)
+                },
+                all() {
+                    return fetch('/api/books/').then(response => response.json());
+                },
+                create(formData) {
+                    return fetch('/api/book/', {
+                        method: 'POST',
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(formData),
+                    })
+                },
+                get (id) {
+                    return fetch(`/api/book/${id}/`, { method: "GET" }).then(response => response.json());
+                },
+                update: async (formData) => {
+                    return fetch(`/api/book/`, {
+                        method: "PATCH", headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(formData),
+                    }).then(response => response.json());
+                },
+                delete (id){
+                    return fetch(`/api/book/${id}/`, { method: "DELETE" }).then(response => response.json());
+                },
+            })
+
+        })
+    </script>
+
+    <!-- Styling -->
+    <style>
+
+    </style>
+</body>
+
+
+
+</html>
