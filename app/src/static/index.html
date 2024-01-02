@@ -2,7 +2,7 @@
 <html lang="en" data-theme="emerald">
 
 <head>
-    <title>Index</title>
+    <title>Delia Tech Books</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- font -->
@@ -40,9 +40,10 @@
     <header class="shadow-lg">
         <div class="navbar bg-base-100">
             <div class="flex-1">
-                <span class="text-xl">Delia Tech</span>
+                <span class="text-xl">Delia Tech Books</span>
             </div>
             <div class="flex-none" hx-target="#main">
+                <!-- trigger first page render, otherwise just remove the line if it offends you -->
                 <span hx-get="/books" hx-trigger="load"></span>
                 <button hx-get="/books" hx-swap="innerHTML" class="btn btn-ghost">Books</button>
                 <button hx-get="/about" hx-swap="innerHTML" class="btn btn-ghost">About</button>
@@ -50,54 +51,35 @@
         </div>
     </header>
 
-    <main id="main"></main>
+    <main id="main" class="container mx-auto pt-4"></main>
 
     <!-- Actions -->
     <script>
         document.addEventListener('alpine:init', () => {
+            
+            // our api
+            const api = {
+                books: {
+                    all: () => {
+                        return fetch('/api/books/').then(response => response.json());
+                    },
+                    get: (isbn) => {
+                        return fetch(`/api/book/${id}/`, { method: "GET" }).then(response => response.json());
+                    }
+                },
+            }
 
-            // User store for login
+            // Alpine stores
             Alpine.store('books', {
                 books : [],
                 async init() {
-                    this.books = await this.all()
-                    console.log(this.books)
+                    this.books = await api.books.all()
                 },
-                all() {
-                    return fetch('/api/books/').then(response => response.json());
-                },
-                create(formData) {
-                    return fetch('/api/book/', {
-                        method: 'POST',
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(formData),
-                    })
-                },
-                get (id) {
-                    return fetch(`/api/book/${id}/`, { method: "GET" }).then(response => response.json());
-                },
-                update: async (formData) => {
-                    return fetch(`/api/book/`, {
-                        method: "PATCH", headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(formData),
-                    }).then(response => response.json());
-                },
-                delete (id){
-                    return fetch(`/api/book/${id}/`, { method: "DELETE" }).then(response => response.json());
-                },
+                
             })
-
         })
     </script>
 
-    <!-- Styling -->
-    <style>
-
-    </style>
 </body>
 
 

@@ -1,15 +1,41 @@
-<div x-data class="grid grid-cols-2 gap-4 mt-4">
-	<template x-for="book in $store.books.books">
-		<div class="card w-96 bg-base-100 shadow-xl">
-			<div class="card-body">
-				<h2 class="card-title" x-text="book.title"></h2>
-				<p>
-					<span x-text="book.author" class="text-black"></span>
-				</p>
-				<p>
-					<span x-text="book.pages"></span>
-				</p>
-			</div>
+<div x-data="{ search: ''}" >
+
+
+		<!--  search bar -->
+		<div class="flex p-2 bg-base-100 rounded justify-between">
+		
+			<div class="flex gap-2 items-center">
+				<i class="fa-solid fa-magnifying-glass"></i>
+				<input type="text" x-model="search" placeholder="Search Books" class="input input-bordered w-full">
+			</div>		
 		</div>
-	</template>
+		
+		<!-- Display results list -->
+		<section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+			<template :key="book._id" x-for="book in $store.books.books.filter(book => search ? book.title.toLowerCase().startsWith(search.toLowerCase()) : true )"">
+				<div class="card card-side bg-base-100 shadow-xl">
+				
+					<figure><img x-show="!book.showMore" class="h-full" :src="book.thumbnailUrl" x-show="book.thumbnailUrl" alt="Movie" /></figure>
+					<div class="card-body">
+						<h2 class="card-title" x-text="book.title"></h2>
+						<p class="font-bold">Authors</p>
+						<template x-for="author in book.authors">
+							<p x-text="author"></p>
+						</template>
+						<p>
+							<span class="font-bold">Pages:</span> <span x-text="book.pageCount"></span>
+						</p>
+
+						<button class="btn btn-primary" x-show="book.shortDescription" @click="book.showMore = !book.showMore"><span x-show="book.showMore">Less</span> <span x-show="!book.showMore">More...</span></button>
+						
+						<div x-show="book.showMore" x-text="book.shortDescription"></div>
+						
+					</div>
+					
+				</div>
+			</template>
+		</section>
+
+		
+	</div>
 </div>
