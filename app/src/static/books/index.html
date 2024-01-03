@@ -12,7 +12,7 @@
 		
 		<!-- Display results list -->
 		<section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
-			<template :key="book._id" x-for="book in $store.books.books.filter(book => search ? book.title.toLowerCase().startsWith(search.toLowerCase()) : true )"">
+			<template :key="book._id" x-for="book in $store.booksStore.books.filter(book => search ? book.title.toLowerCase().startsWith(search.toLowerCase()) : true )"">
 				<div class="card card-side bg-base-100 shadow-xl">
 				
 					<figure><img x-show="!book.showMore" class="h-full" :src="book.thumbnailUrl" x-show="book.thumbnailUrl" alt="Movie" /></figure>

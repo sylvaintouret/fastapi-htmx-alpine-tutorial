@@ -39,20 +39,20 @@
     <script>
 
         // our api
-            const api = {
-                books: {
-                    all: () => {
-                        return fetch('/api/books/').then(response => response.json());
-                    },
-                    get: (isbn) => {
-                        return fetch(`/api/book/${id}/`, { method: "GET" }).then(response => response.json());
-                    }
+        const api = {
+            books: {
+                all: () => {
+                    return fetch('/api/books/').then(response => response.json());
                 },
-            }
+                get: (isbn) => {
+                    return fetch(`/api/book/${id}/`, { method: "GET" }).then(response => response.json());
+                }
+            },
+        }
         
         // Alpine stores
         document.addEventListener('alpine:init', () => {
-            Alpine.store('books', {
+            Alpine.store('booksStore', {
                 books : [],
                 async init() {
                     this.books = await api.books.all()
