@@ -1,19 +1,8 @@
-from fastapi import FastAPI
+import json
 
-API_PATH = "/api"
+file = "./app/src/books.json"
 
-# create the main app that only serves static files at root
-app = FastAPI(docs_url=None, redoc_url=None)
+with open(file, "r") as f:
+    data = json.loads(f.read())
 
-# create the api
-api = FastAPI(root_path=API_PATH, docs_url="/docs")
-
-
-# -- demo urls
-@api.get("/books")
-async def books():
-    pass
-
-
-# mount the api on subpath
-app.mount(API_PATH, api, "api")
+# load it in to something to play with

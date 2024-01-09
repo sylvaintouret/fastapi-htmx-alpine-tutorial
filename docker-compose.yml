@@ -2,10 +2,27 @@ version: '3.9'
 
 services:
 
+  redis:
+    image: redis:latest
+    command: redis-server --requirepass paassw0rd
+    hostname: redis
+  
+  redis-commander:
+        container_name: redis-commander
+        hostname: redis-commander
+        image: rediscommander/redis-commander:latest
+        restart: always
+        environment:
+        - REDIS_HOSTS=db:redis:6379:0:paassw0rd
+        ports:
+        - "8081:8081"
+
   api:
     build:
       context: ./app
       dockerfile: ./Dockerfile
+    environment:
+      DATABASE_URI: redis://redis:6379?password=paassw0rd
     volumes:
       - ./app/src/static:/app/static
     ports:

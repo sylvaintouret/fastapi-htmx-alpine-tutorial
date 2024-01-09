@@ -1,18 +1,18 @@
-from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
-
 import json
+
+from fastapi import FastAPI, Depends
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
-from typing import List, Optional
+from database import get_db, Database, get_database
 
 
 class BookRead(BaseModel):
     title: str
     pageCount: int
     authors: list[str]
-    thumbnailUrl: Optional[str] = None
-    shortDescription: Optional[str] = None
-    id: int = Field(..., alias="_id")
+    thumbnailUrl: str | None = None
+    shortDescription: str | None = None
+    id: str
     isbn: str
 
 
@@ -25,12 +25,25 @@ app = FastAPI(docs_url=None, redoc_url=None)
 api = FastAPI(root_path=API_PATH, docs_url="/docs")
 
 
+@app.on_event("startup")
+async def startup_event():
+    db = get_database()
+    with open("books.json", "r", encoding="utf-8") as f:
+        datas = json.load(f)
+
+    for data in datas.get("books", []):
+        db.books.add(data)
+
+
 # -- demo urls
-@api.get("/books", response_model=List[BookRead])
-async def books():
-    with open("books.json", "r") as f:
-        data = json.load(f)
-    return data.get("books", [])
+@api.get("/books", response_model=list[BookRead])
+async def books(db=Depends(get_db)):
+    return db.books.all()
+
+
+@api.get("/book/{uid}", response_model=BookRead)
+async def book_get(uid: str, db=Depends(get_db)):
+    return db.books.get(uid)
 
 
 # mount the api on subpath
